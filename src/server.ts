@@ -1,9 +1,13 @@
-import express, { Application, Request, Response } from 'express';
+import 'reflect-metadata';
+import { useContainer, createExpressServer } from 'routing-controllers';
+import { BlogsController } from './modules/blogs/blogs.controller';
+import { Container } from 'typedi';
 
-const app: Application = express();
+useContainer(Container);
 
-app.get('/', (_: Request, res: Response) => {
-  res.send('Hello world');
+const app = createExpressServer({
+  routePrefix: '/',
+  controllers: [BlogsController],
 });
 
 app.listen('3000', () => {
