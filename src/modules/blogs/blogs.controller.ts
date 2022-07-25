@@ -17,8 +17,8 @@ export class BlogsController {
   @Get('/')
   async getAllBlogs() {
     try {
-      const s = await this.blogService.getAllBlogs();
-      return [s];
+      const allBlogs = await this.blogService.getAllBlogs();
+      return allBlogs;
     } catch (error) {
       return new HttpError(400, 'Error');
     }
@@ -27,6 +27,10 @@ export class BlogsController {
   @Post('/')
   @OnUndefined(201)
   async createBlog(@Body() body: any) {
-    console.log(body);
+    await this.blogService.createNewBlog({
+      name: body.name,
+      content: body.content,
+      date: new Date(),
+    });
   }
 }
