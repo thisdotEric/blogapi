@@ -6,7 +6,7 @@
   "author": "John Eric Siguenza <siguenzajohneric@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsnd src/server.ts"
+    "dev": "tsnd --respawn --transpile-only src/server.ts"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",

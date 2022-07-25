@@ -1,4 +1,11 @@
-import { Get, JsonController } from 'routing-controllers';
+import {
+  Body,
+  Get,
+  HttpError,
+  JsonController,
+  OnUndefined,
+  Post,
+} from 'routing-controllers';
 import { Service } from 'typedi';
 import { BlogService } from './blogs.service';
 
@@ -9,8 +16,17 @@ export class BlogsController {
 
   @Get('/')
   async getAllBlogs() {
-    const res = await this.blogService.getAllBlogs();
+    try {
+      const s = await this.blogService.getAllBlogs();
+      return [s];
+    } catch (error) {
+      return new HttpError(400, 'Error');
+    }
+  }
 
-    return { res };
+  @Post('/')
+  @OnUndefined(201)
+  async createBlog(@Body() body: any) {
+    console.log(body);
   }
 }
