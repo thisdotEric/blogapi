@@ -16,14 +16,28 @@ export class BlogsRepository
       throw new Error('Blogs not found');
     }
 
-    return blogs.map((b) => ({
-      id: b._id.toString(),
-      name: b.name,
-      content: b.content,
-      date: b.date,
-      tags: b.tags == undefined ? [] : b.tags,
-      images: b.images ?? [],
-    }));
+    return blogs.map((b) => {
+      console.log(b.images);
+
+      let images: Image[] = [];
+
+      if (b.images) {
+        images = b.images.map((img: any) => ({
+          id: img._id.toString(),
+          name: img.name,
+          path: `${process.env.SERVER}${img.path}`,
+        }));
+      }
+
+      return {
+        id: b._id.toString(),
+        name: b.name,
+        content: b.content,
+        date: b.date,
+        tags: b.tags ?? [],
+        images,
+      };
+    });
   }
 
   async get(id: string): Promise<IBlogWithID> {

@@ -88,6 +88,9 @@ export class BlogsController {
   @OnUndefined(200)
   @UseBefore(upload.single('image'))
   async uploadImage(@Param('id') id: string, @UploadedFile('image') file: any) {
+    /**
+     * TODO: Filenames with spaces in between must be trimmed
+     */
     try {
       await this.blogService.addBlogImage(id, {
         name: file.originalname,
