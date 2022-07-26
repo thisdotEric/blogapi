@@ -6,6 +6,7 @@ import { useContainer, useExpressServer } from 'routing-controllers';
 import { BlogsController } from './modules/blogs/blogs.controller';
 import { HomeController } from './modules/home/home.controller';
 import mongoose from 'mongoose';
+import { join } from 'path';
 
 (async () => {
   try {
@@ -18,6 +19,8 @@ import mongoose from 'mongoose';
 
   const app: Application = express();
   app.use(express.json());
+
+  app.use('/uploads', express.static(join(__dirname, '../uploads/')));
 
   const server = useExpressServer(app, {
     routePrefix: '/',
