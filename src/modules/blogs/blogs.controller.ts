@@ -21,8 +21,6 @@ export class BlogsController {
   async getAllBlogs(): Promise<any[]> {
     try {
       const allBlogs = await this.blogService.getAllBlogs();
-      console.log(allBlogs);
-
       return allBlogs;
     } catch (error) {
       throw new HttpError(500, 'Error');
@@ -33,7 +31,7 @@ export class BlogsController {
   @OnUndefined(200)
   async getSingleBlog(@Param('id') id: string) {
     const blog = await this.blogService.getSingleBlog(id);
-    return blog?.toObject();
+    return blog;
   }
 
   @Delete('/:id')

@@ -6,15 +6,10 @@ export interface IBlog {
   content: string;
 }
 
-const blogSchema = new Schema<IBlog>(
-  {
-    name: { type: String, required: true },
-    content: { type: String, required: true },
-    date: { type: Date, default: Date.now },
-  },
-  {
-    timestamps: true,
-  }
-);
+const blogSchema = new Schema({
+  name: { type: String, required: true },
+  content: { type: String, required: true },
+  date: { type: Date, default: Date.now },
+});
 
 export default model<IBlog>('Blogs', blogSchema);

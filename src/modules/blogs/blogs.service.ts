@@ -7,19 +7,19 @@ export class BlogService {
   constructor(private readonly blogRepo: BlogsRepository) {}
 
   async createNewBlog(newBlog: IBlog) {
-    return this.blogRepo.addNewBlog(newBlog);
+    return this.blogRepo.create(newBlog);
   }
 
   async getSingleBlog(id: string) {
-    return this.blogRepo.getSingleBlog(id);
+    return this.blogRepo.get(id);
   }
 
   async getAllBlogs(): Promise<IBlog[]> {
-    return this.blogRepo.getAllBlogs();
+    return this.blogRepo.getAll();
   }
 
   async deleteBlog(id: string) {
-    return this.blogRepo.deleteBlog(id);
+    return this.blogRepo.delete(id);
   }
 
   async updateBlog(id: string, updateBlog: IBlog) {
