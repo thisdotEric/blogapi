@@ -31,6 +31,16 @@ export class BlogsController {
     }
   }
 
+  @Get('/search/:blog_name')
+  async searchBlogByName(@Param('blog_name') name: string) {
+    try {
+      const blog = await this.blogService.getBlogByName(name);
+      return blog;
+    } catch (error) {
+      throw new HttpError(500, error.message);
+    }
+  }
+
   @Get('/:id')
   @OnUndefined(200)
   async getSingleBlog(@Param('id') id: string) {
@@ -90,6 +100,7 @@ export class BlogsController {
   async uploadImage(@Param('id') id: string, @UploadedFile('image') file: any) {
     /**
      * TODO: Filenames with spaces in between must be trimmed
+     * TODO: Limit files to images only
      */
     try {
       await this.blogService.addBlogImage(id, {

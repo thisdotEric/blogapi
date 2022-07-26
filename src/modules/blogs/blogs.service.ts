@@ -29,4 +29,8 @@ export class BlogService {
   async addBlogImage(id: string, imageDetails: Image) {
     return this.blogRepo.addBlogImage(id, imageDetails);
   }
+
+  async getBlogByName(name: string) {
+    return this.blogRepo.getBlogByName(name);
+  }
 }

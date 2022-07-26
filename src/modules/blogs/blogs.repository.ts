@@ -40,8 +40,19 @@ export class BlogsRepository
     });
   }
 
-  async get(id: string): Promise<IBlogWithID> {
-    const blog = await Blog.findOne({ _id: id }).lean();
+  async get(_id: string): Promise<IBlogWithID> {
+    return this.getBlog(_id);
+  }
+
+  async getBlogByName(name: string): Promise<IBlogWithID> {
+    return this.getBlog(name, false);
+  }
+
+  private async getBlog(key: string, byKey: boolean = true) {
+    let blog;
+
+    if (byKey) blog = await Blog.findOne({ _id: key }).lean();
+    else blog = await Blog.findOne({ name: key }).lean();
 
     if (!blog) {
       throw new Error('Blog not found');
