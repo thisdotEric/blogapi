@@ -9,8 +9,11 @@ import mongoose from 'mongoose';
 import { join } from 'path';
 
 (async () => {
+  const mongodb_server =
+    process.env.MONGO_SERVER || 'mongodb://localhost:27017/blogdb';
+
   try {
-    await mongoose.connect('mongodb://localhost:27017/blogdb');
+    await mongoose.connect(mongodb_server);
   } catch (error) {
     console.log('Error connecting');
   }
