@@ -23,6 +23,6 @@ export class BlogService {
   }
 
   async updateBlog(id: string, updateBlog: IBlog) {
-    return this.blogRepo.updateBlog(id, updateBlog);
+    return this.blogRepo.update(id, updateBlog);
   }
 }
