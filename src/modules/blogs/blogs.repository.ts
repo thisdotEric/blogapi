@@ -83,20 +83,22 @@ export class BlogsRepository
     id: string,
     { name, content, date }: IBlog
   ): Promise<IBlogWithID> {
-    const updatedBlog = await Blog.findByIdAndUpdate(
+    const blog = await Blog.findByIdAndUpdate(
       { _id: id },
       { name, content, date }
     ).lean();
 
-    if (updatedBlog == null) {
+    if (blog == null) {
       throw new Error('Unable to update blog item');
     }
 
+    const updatedBlog = await Blog.findByIdAndUpdate({ _id: id }).lean();
+
     return {
       id: updatedBlog!._id.toString(),
-      name: updatedBlog?.name,
-      content: updatedBlog?.content,
-      date: updatedBlog?.date,
+      name: updatedBlog!.name,
+      content: updatedBlog!.content,
+      date: updatedBlog!.date,
     };
   }
 
