@@ -138,4 +138,40 @@ export class BlogsRepository
 
     return true;
   }
+
+  async updateBlogImage(
+    image_id: string,
+    { name, path }: Image
+  ): Promise<boolean> {
+    const updatedBlogImages = await Blog.findOneAndUpdate(
+      {
+        'images._id': image_id,
+      },
+      {
+        $set: {
+          'images.$.path': path,
+          'images.$.name': name,
+        },
+      }
+    );
+
+    if (updatedBlogImages == null)
+      throw new Error('Error updating image of the blog item');
+
+    return true;
+  }
+
+  async getPastImageFilePath(image_id: string): Promise<string> {
+    const pastImage = await Blog.findOne({ 'images._id': image_id }).lean();
+
+    let filePath = '';
+
+    if (pastImage) {
+      filePath = pastImage.images!.filter(
+        (i: any) => i._id.toString() === image_id
+      )[0].path;
+    }
+
+    return filePath;
+  }
 }

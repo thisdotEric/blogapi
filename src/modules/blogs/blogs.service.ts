@@ -30,6 +30,21 @@ export class BlogService {
     return this.blogRepo.addBlogImage(id, imageDetails);
   }
 
+  async updateBlogImage(image_id: string, imageDetails: Image) {
+    /**
+     * TODO: Delete the old image
+     */
+
+    // Delete the image to be updated
+    // const filePath = await this.blogRepo.getPastImageFilePath(image_id);
+    // console.log(filePath);
+
+    // unlink(join(__dirname, '../../..', filePath), () => {});
+
+    // Update to new image
+    return this.blogRepo.updateBlogImage(image_id, imageDetails);
+  }
+
   async getBlogByName(name: string) {
     return this.blogRepo.getBlogByName(name);
   }

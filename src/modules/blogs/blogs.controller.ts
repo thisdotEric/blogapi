@@ -111,4 +111,18 @@ export class BlogsController {
       throw new HttpError(500, error.message);
     }
   }
+
+  @Patch('/images/:id')
+  @OnUndefined(200)
+  @UseBefore(upload.single('image'))
+  async updateImage(@Param('id') id: string, @UploadedFile('image') file: any) {
+    try {
+      await this.blogService.updateBlogImage(id, {
+        name: file.originalname,
+        path: file.path,
+      });
+    } catch (error) {
+      throw new HttpError(500, error.message);
+    }
+  }
 }
