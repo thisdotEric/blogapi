@@ -1,10 +1,15 @@
 import { Schema, model } from 'mongoose';
 
+export interface Image {
+  name: string;
+  path: string;
+}
+
 export interface IBlog {
   name: string;
   date: Date;
   content: string;
-  images?: string[];
+  images?: Image[];
   tags?: string[];
 }
 
@@ -12,7 +17,12 @@ const blogSchema = new Schema({
   name: { type: String, required: true },
   content: { type: String, required: true },
   date: { type: Date, default: Date.now },
-  images: [{ type: String }],
+  images: [
+    {
+      name: String,
+      path: String,
+    },
+  ],
   tags: [{ type: String }],
 });
 

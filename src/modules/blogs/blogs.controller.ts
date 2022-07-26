@@ -9,14 +9,12 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UploadedFile,
   UseBefore,
 } from 'routing-controllers';
 import { Service } from 'typedi';
 import { BlogService } from './blogs.service';
 import upload from '../../utils/multer';
-import { Request } from 'express';
 
 @JsonController('blogs')
 @Service()
@@ -29,7 +27,7 @@ export class BlogsController {
       const allBlogs = await this.blogService.getAllBlogs();
       return allBlogs;
     } catch (error) {
-      throw new HttpError(500, 'Error fetching blogs');
+      throw new HttpError(500, error.message);
     }
   }
 
@@ -40,7 +38,7 @@ export class BlogsController {
       const blog = await this.blogService.getSingleBlog(id);
       return blog;
     } catch (error) {
-      throw new NotFoundError('Blog not found');
+      throw new NotFoundError(error.message);
     }
   }
 
@@ -50,7 +48,7 @@ export class BlogsController {
     try {
       await this.blogService.deleteBlog(id);
     } catch (error) {
-      throw new HttpError(500, 'Error deleting blog');
+      throw new HttpError(500, error.message);
     }
   }
 
@@ -66,7 +64,7 @@ export class BlogsController {
 
       return newBlog;
     } catch (error) {
-      throw new HttpError(500, 'Error adding new blog item');
+      throw new HttpError(500, error.message);
     }
   }
 
@@ -82,31 +80,21 @@ export class BlogsController {
 
       return updatedBlog;
     } catch (error) {
-      throw new HttpError(500, 'Error updating blog item');
+      throw new HttpError(500, error.message);
     }
   }
 
   @Post('/:id/images')
   @OnUndefined(200)
   @UseBefore(upload.single('image'))
-  async uploadImage(
-    @Req() req: Request,
-    @Param('id') id: string,
-    @UploadedFile('image') file: any
-  ) {
-    console.log(id);
-
-    const filePath = req.protocol + '://' + req.hostname + '/' + file.filename;
-    console.log(filePath);
-
-    await this.blogService.createNewBlog({
-      name: 'sd',
-      content: 'sdf',
-      date: new Date(),
-    });
-
-    return {
-      status: 'uploaded',
-    };
+  async uploadImage(@Param('id') id: string, @UploadedFile('image') file: any) {
+    try {
+      await this.blogService.addBlogImage(id, {
+        name: file.originalname,
+        path: file.path,
+      });
+    } catch (error) {
+      throw new HttpError(500, error.message);
+    }
   }
 }

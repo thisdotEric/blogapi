@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { BlogsRepository } from './blogs.repository';
-import { IBlog } from './blogs.model';
+import { IBlog, Image } from './blogs.model';
 
 @Service()
 export class BlogService {
@@ -24,5 +24,9 @@ export class BlogService {
 
   async updateBlog(id: string, updateBlog: IBlog) {
     return this.blogRepo.update(id, updateBlog);
+  }
+
+  async addBlogImage(id: string, imageDetails: Image) {
+    return this.blogRepo.addBlogImage(id, imageDetails);
   }
 }

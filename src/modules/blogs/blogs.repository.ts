@@ -1,6 +1,6 @@
 import { IRead, IWrite } from 'src/interfaces/repository.interface';
 import { Service } from 'typedi';
-import Blog from './blogs.model';
+import Blog, { Image } from './blogs.model';
 import { IBlog } from './blogs.model';
 
 type IBlogWithID = IBlog & { id: string };
@@ -13,7 +13,7 @@ export class BlogsRepository
     const blogs = await Blog.find({}).lean();
 
     if (!blogs) {
-      throw new Error('Empty blogs');
+      throw new Error('Blogs not found');
     }
 
     return blogs.map((b) => ({
@@ -30,7 +30,7 @@ export class BlogsRepository
     const blog = await Blog.findOne({ _id: id }).lean();
 
     if (!blog) {
-      throw new Error('Empty blog');
+      throw new Error('Blog not found');
     }
 
     return {
@@ -38,14 +38,22 @@ export class BlogsRepository
       name: blog.name,
       content: blog.content,
       date: blog.date,
-      tags: blog.tags == undefined ? [] : blog.tags,
+      tags: blog.tags ?? [],
       images: blog.images ?? [],
     };
   }
 
   async create({ name, content, date }: IBlog): Promise<IBlogWithID> {
-    const newBlog = new Blog({ name, content, date });
+    const newBlog = new Blog({
+      name,
+      content,
+      date,
+    });
     const savedBlog = await newBlog.save();
+
+    if (savedBlog == null) {
+      throw new Error('Error adding new blog item');
+    }
 
     return {
       id: savedBlog.id,
@@ -82,6 +90,24 @@ export class BlogsRepository
     const deletedBlog = await Blog.findOneAndDelete({ _id: id }).lean();
 
     if (deletedBlog == null) throw new Error('Error deleting blog item');
+
+    return true;
+  }
+
+  async addBlogImage(id: string, imageDetails: Image): Promise<boolean> {
+    const updatedBlogImages = await Blog.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $addToSet: {
+          images: imageDetails,
+        },
+      }
+    );
+
+    if (updatedBlogImages == null)
+      throw new Error('Error adding images to blog item');
 
     return true;
   }
