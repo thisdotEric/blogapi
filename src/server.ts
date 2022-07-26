@@ -10,7 +10,7 @@ import { join } from 'path';
 
 (async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/test');
+    await mongoose.connect('mongodb://localhost:27017/blogdb');
   } catch (error) {
     console.log('Error connecting');
   }
