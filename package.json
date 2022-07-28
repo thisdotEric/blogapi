@@ -6,7 +6,9 @@
   "author": "John Eric Siguenza <siguenzajohneric@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsnd --respawn --transpile-only src/server.ts"
+    "dev": "tsnd --respawn --transpile-only src/server.ts",
+    "build": "tsc -p .",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@types/multer": "^1.4.7",

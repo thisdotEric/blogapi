@@ -1,1 +1,23 @@
-services: '3'
+version: '3.8'
+
+services:
+  api:
+    image: blogapi
+    build: .
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/data/db
+
+volumes:
+  data:
