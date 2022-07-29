@@ -21,10 +21,10 @@ import upload from '../../utils/multer';
 export class BlogsController {
   constructor(private readonly blogService: BlogService) {}
 
-  @Get('/')
-  async getAllBlogs(): Promise<any[]> {
+  @Get('/:user_id')
+  async getAllBlogs(@Param('user_id') user_id: string): Promise<any[]> {
     try {
-      const allBlogs = await this.blogService.getAllBlogs();
+      const allBlogs = await this.blogService.getAllBlogs(user_id);
       return allBlogs;
     } catch (error) {
       throw new HttpError(500, error.message);
@@ -37,11 +37,11 @@ export class BlogsController {
       const blog = await this.blogService.getBlogByName(name);
       return blog;
     } catch (error) {
-      throw new HttpError(500, error.message);
+      throw new NotFoundError(error.message);
     }
   }
 
-  @Get('/:id')
+  @Get('/id/:id')
   @OnUndefined(200)
   async getSingleBlog(@Param('id') id: string) {
     try {
@@ -67,11 +67,12 @@ export class BlogsController {
   async createBlog(@Body() body: any) {
     try {
       const newBlog = await this.blogService.createNewBlog({
+        user_id: body.user_id,
         name: body.name,
         content: body.content,
         date: body.date,
+        tags: body.tags,
       });
-
       return newBlog;
     } catch (error) {
       throw new HttpError(500, error.message);
@@ -83,9 +84,11 @@ export class BlogsController {
   async updateBlog(@Body() body: any, @Param('id') id: string) {
     try {
       const updatedBlog = await this.blogService.updateBlog(id, {
+        user_id: body.user_id,
         name: body.name,
         content: body.content,
         date: body.date,
+        tags: body.tags,
       });
 
       return updatedBlog;

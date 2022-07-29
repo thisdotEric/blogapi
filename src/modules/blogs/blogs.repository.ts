@@ -9,16 +9,14 @@ type IBlogWithID = IBlog & { id: string };
 export class BlogsRepository
   implements IWrite<IBlogWithID>, IRead<IBlogWithID>
 {
-  async getAll(): Promise<IBlogWithID[]> {
-    const blogs = await Blog.find({}).lean();
+  async getAll(user_id: string): Promise<IBlogWithID[]> {
+    const blogs = await Blog.find({ user_id }).lean();
 
     if (!blogs) {
       throw new Error('Blogs not found');
     }
 
     return blogs.map((b) => {
-      console.log(b.images);
-
       let images: Image[] = [];
 
       if (b.images) {
@@ -30,6 +28,7 @@ export class BlogsRepository
       }
 
       return {
+        user_id: b.user_id,
         id: b._id.toString(),
         name: b.name,
         content: b.content,
@@ -58,21 +57,40 @@ export class BlogsRepository
       throw new Error('Blog not found');
     }
 
+    let images: Image[] = [];
+
+    if (blog.images) {
+      images = blog.images.map((img: any) => ({
+        id: img._id.toString(),
+        name: img.name,
+        path: `${process.env.SERVER}${img.path}`,
+      }));
+    }
+
     return {
+      user_id: blog.user_id,
       id: blog._id.toString(),
       name: blog.name,
       content: blog.content,
       date: blog.date,
       tags: blog.tags ?? [],
-      images: blog.images ?? [],
+      images,
     };
   }
 
-  async create({ name, content, date }: IBlog): Promise<IBlogWithID> {
+  async create({
+    user_id,
+    name,
+    content,
+    date,
+    tags,
+  }: IBlog): Promise<IBlogWithID> {
     const newBlog = new Blog({
+      user_id,
       name,
       content,
       date,
+      tags,
     });
     const savedBlog = await newBlog.save();
 
@@ -81,6 +99,7 @@ export class BlogsRepository
     }
 
     return {
+      user_id: savedBlog.user_id,
       id: savedBlog.id,
       name: savedBlog.name,
       content: savedBlog.content,
@@ -92,11 +111,11 @@ export class BlogsRepository
 
   async update(
     id: string,
-    { name, content, date }: IBlog
+    { user_id, name, content, date, tags }: IBlog
   ): Promise<IBlogWithID> {
     const blog = await Blog.findByIdAndUpdate(
-      { _id: id },
-      { name, content, date }
+      { _id: id, user_id },
+      { name, content, date, tags }
     ).lean();
 
     if (blog == null) {
@@ -106,6 +125,7 @@ export class BlogsRepository
     const updatedBlog = await Blog.findByIdAndUpdate({ _id: id }).lean();
 
     return {
+      user_id: updatedBlog!.user_id,
       id: updatedBlog!._id.toString(),
       name: updatedBlog!.name,
       content: updatedBlog!.content,
@@ -161,17 +181,17 @@ export class BlogsRepository
     return true;
   }
 
-  async getPastImageFilePath(image_id: string): Promise<string> {
-    const pastImage = await Blog.findOne({ 'images._id': image_id }).lean();
+  // async getPastImageFilePath(image_id: string): Promise<string> {
+  //   const pastImage = await Blog.findOne({ 'images._id': image_id }).lean();
 
-    let filePath = '';
+  //   let filePath = '';
 
-    if (pastImage) {
-      filePath = pastImage.images!.filter(
-        (i: any) => i._id.toString() === image_id
-      )[0].path;
-    }
+  //   if (pastImage) {
+  //     filePath = pastImage.images!.filter(
+  //       (i: any) => i._id.toString() === image_id
+  //     )[0].path;
+  //   }
 
-    return filePath;
-  }
+  //   return filePath;
+  // }
 }

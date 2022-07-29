@@ -2,22 +2,12 @@ version: '3.8'
 
 services:
   api:
-    image: blogapi
+    image: blogapi:latest
     build: .
     environment:
       - NODE_ENV=production
+      - MONGO_SERVER=mongodb+srv://eric:test@cluster0.rivpv.mongodb.net/?retryWrites=true&w=majority
+      - PORT=3005
+      - SERVER=http://localhost:3005/
     ports:
       - 3000:3000
-    depends_on:
-      - mongo
-    volumes:
-      - .:/app
-  mongo:
-    image: mongo:latest
-    ports:
-      - 27017:27017
-    volumes:
-      - data:/data/db
-
-volumes:
-  data:

@@ -20,7 +20,7 @@ COPY --from=builder /app/dist ./dist
 
 RUN mkdir uploads 
 
-RUN yarn install
+RUN yarn install --prod
 
 EXPOSE 3000
 CMD node dist/server.js

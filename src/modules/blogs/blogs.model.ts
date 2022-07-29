@@ -7,6 +7,7 @@ export interface Image {
 }
 
 export interface IBlog {
+  user_id: string;
   name: string;
   date: Date;
   content: string;
@@ -15,6 +16,7 @@ export interface IBlog {
 }
 
 const blogSchema = new Schema({
+  user_id: { type: String, required: true },
   name: { type: String, required: true },
   content: { type: String, required: true },
   date: { type: Date, default: Date.now },

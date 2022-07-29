@@ -5,6 +5,6 @@ export interface IWrite<T> {
 }
 
 export interface IRead<T> {
-  getAll(): Promise<T[]>;
+  getAll(user_id: string): Promise<T[]>;
   get(id: string): Promise<T>;
 }

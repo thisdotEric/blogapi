@@ -14,8 +14,8 @@ export class BlogService {
     return this.blogRepo.get(id);
   }
 
-  async getAllBlogs(): Promise<IBlog[]> {
-    return this.blogRepo.getAll();
+  async getAllBlogs(user_id: string): Promise<IBlog[]> {
+    return this.blogRepo.getAll(user_id);
   }
 
   async deleteBlog(id: string) {
